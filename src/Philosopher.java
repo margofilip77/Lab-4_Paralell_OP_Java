@@ -13,28 +13,18 @@ public class Philosopher extends Thread {
     }
 
     private void lock() throws InterruptedException {
-        int leftFork = id;
-        int rightFork = (id + 1) % 5;
-
-        // Блокуємо доступ до виделок
-        while (true) {
-            // Спробуємо забрати обидві виделки одночасно
-            if (forks[leftFork].tryAcquire() && forks[rightFork].tryAcquire()) {
-                System.out.println("P: " + id + " took left and right");
-                break; // Вийти з циклу, якщо обидві виделки забрані
-            } else {
-                // Звільнити виделку, якщо обидві не доступні одночасно
-                if (forks[leftFork].availablePermits() == 0) {
-                    forks[leftFork].release();
-                }
-                if (forks[rightFork].availablePermits() == 0) {
-                    forks[rightFork].release();
-                }
-                Thread.sleep(100);
-            }
+        if (id % 2 == 0) {
+            forks[id].acquire();
+            forks[(id + 1) % 5].acquire();
+            System.out.println("P: " + id + " took right");
+            System.out.println("P: " + id + " took left");
+        } else {
+            forks[(id + 1) % 5].acquire();
+            forks[id].acquire();
+            System.out.println("P: " + id + " took left");
+            System.out.println("P: " + id + " took right");
         }
     }
-
 
     private void unlock() {
         forks[id].release();
