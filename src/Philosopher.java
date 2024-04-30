@@ -35,23 +35,24 @@ public class Philosopher extends Thread {
 
     @Override
     public void run() {
-        System.out.println("P: " + id + " is thinking");
+        for (int i = 0; i < 3; i++) {
+            System.out.println("P: " + id + " is thinking");
 
-        try {
-            lock();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            try {
+                lock();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            System.out.println("P: " + id + " is eating");
+            unlock();
+
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
-
-        System.out.println("P: " + id + " is eating");
-        unlock();
-
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
 
         latch.countDown();
     }
