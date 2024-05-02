@@ -27,10 +27,17 @@ public class Philosopher extends Thread {
     }
 
     private void unlock() {
-        forks[id].release();
-        forks[(id + 1) % 5].release();
-        System.out.println("P: " + id + " put right");
-        System.out.println("P: " + id + " put left");
+        if (id % 2 == 0) { // Якщо ідентифікатор парний
+            forks[id].release(); // Парний філософ звільняє праву вилку першою
+            forks[(id + 1) % 5].release(); // Потім ліву
+            System.out.println("P: " + id + " put right");
+            System.out.println("P: " + id + " put left");
+        } else { // Якщо ідентифікатор непарний
+            forks[(id + 1) % 5].release(); // Непарний філософ звільняє ліву вилку першою
+            forks[id].release(); // Потім праву
+            System.out.println("P: " + id + " put left");
+            System.out.println("P: " + id + " put right");
+        }
     }
 
     @Override
@@ -53,6 +60,7 @@ public class Philosopher extends Thread {
                 throw new RuntimeException(e);
             }
         }
+
 
         latch.countDown();
     }
